@@ -2,8 +2,7 @@
 #include <PubSubClient.h>
 
 
-#define DHTPIN 4                         // 传感器连接到D4 -- Sensor to D4
-#define DHTTYPE DHT11 
+
 #define  Btn_light 0  
 
 
