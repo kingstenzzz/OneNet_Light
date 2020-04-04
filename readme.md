@@ -9,3 +9,4 @@ https://www.icloud.com/shortcuts/c83d5df4dbd045edb560186a84174e68
 
 添加了NTP授时服务和人体红外传感器，实现了晚上感应自动自动开灯。
 
+
