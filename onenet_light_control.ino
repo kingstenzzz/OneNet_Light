@@ -1,9 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <WiFiUdp.h>
+#include <NTPClient.h>
+#include "time.h"
 
 
 
-#define  Btn_light 0  
+#define  Btn_light 2  
+#define  People_io 3
 
 
  // Update these with values suitable for your network.
@@ -11,9 +15,9 @@
  const char* ssid = "kingsten";//WIFI名
  const char* password = "23622033";//密码
  const char* mqtt_server = "183.230.40.39";//onenet服务器
- const char* DEV_ID = "583458957"; //设备ID
+ const char* DEV_ID = "590574850"; //设备ID
  const char* DEV_PRO_ID = "315799"; //产品ID
- const char* DEV_KEY = "IDePEtsFhX***6s="; //API KEY
+ const char* DEV_KEY = "IDePEtsFhXPK4FHqrZ9T7FbNo6s="; //API KEY
  IPAddress staticIP(192,168,2,107);//固定IP地址
 IPAddress gateway(192,168,2,1);//网关地址
 IPAddress subnet(255,255,255,0);//子网掩码地址
@@ -29,6 +33,7 @@ int light_flag=0;
 
 
 
+
 //wifi初始化
  void setup_wifi() {
 
@@ -37,7 +42,8 @@ int light_flag=0;
    Serial.println();
    Serial.print("Connecting to ");
    Serial.println(ssid);
-    WiFi.config(staticIP,gateway,subnet);
+
+    //WiFi.config(staticIP,gateway,subnet);
    WiFi.begin(ssid, password);
 
    while (WiFi.status() != WL_CONNECTED) {
@@ -113,8 +119,9 @@ void public_data(){
    Serial.begin(115200);
       Serial.print("start");
     Serial.print("failed, rc=");
+        pinMode(People_io, INPUT);
      pinMode(Btn_light, OUTPUT);     // Initialize the Btn_light pin as an output
-      digitalWrite(Btn_light, LOW);  
+      digitalWrite(Btn_light, HIGH);  
  //  dht.begin();
    setup_wifi();
    client.setServer(mqtt_server, 6002);
@@ -123,16 +130,25 @@ void public_data(){
  }
 
  void loop() {
+  int hour;
+  
    if (!client.connected()) {
      reconnect();
    }
    client.loop();
-   {
-
-     delay(10000);
-      Serial.println("connected");
-    
-   }
+   
+     delay(1000);
+     hour=Get_Time();
+     Serial.println(Get_Time(),DEC);
+     Serial.println("connected");
+     if(hour>=17&&hour<=23)
+     {
+     if(digitalRead(People_io))//有人高电平
+     {
+       digitalWrite(Btn_light, LOW);   // Turn the LED on (Note that LOW is the voltage level
+        Serial.print("people");
+      }
+     }   
 
  }
 
